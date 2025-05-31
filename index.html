@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Академия Строителей Minecraft</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+        
+        :root {
+            --mc-dark-green: #2C4B21;
+            --mc-green: #3B5C2B;
+            --mc-light-green: #5A7D3E;
+            --mc-brown: #5E3E1C;
+            --mc-light-brown: #8B5D2B;
+            --mc-dark-brown: #3D2B1A;
+            --mc-white: #F0F0F0;
+            --mc-black: #1A1A1A;
+            --mc-red: #FF5555;
+            --mc-blue: #5555FF;
+            --mc-yellow: #FFFF55;
+            --mc-gray: #AAAAAA;
+        }
+        
+        body {
+            font-family: 'Press Start 2P', cursive;
+            background-color: var(--mc-dark-green);
+            background-image: 
+                linear-gradient(rgba(44, 75, 33, 0.8), rgba(44, 75, 33, 0.8)),
+                url('https://www.minecraft.net/content/dam/minecraft/touchup-2020/minecraft-background-creepers.jpg');
+            background-size: cover;
+            background-attachment: fixed;
+            color: var(--mc-white);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            image-rendering: pixelated;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: rgba(30, 30, 30, 0.85);
+            border: 8px solid var(--mc-light-brown);
+            border-image: 
+                linear-gradient(
+                    to bottom right,
+                    var(--mc-brown) 25%,
+                    var(--mc-light-brown) 25%,
+                    var(--mc-light-brown) 75%,
+                    var(--mc-brown) 75%
+                ) 1;
+            box-shadow: 
+                0 0 0 4px var(--mc-dark-brown),
+                0 0 20px rgba(0, 0, 0, 0.8);
+            padding: 20px;
+        }
+        
+        h1 {
+            color: var(--mc-yellow);
+            text-align: center;
+            font-size: 2rem;
+            margin: 20px 0;
+            text-shadow: 4px 4px 0 var(--mc-black);
+            letter-spacing: 2px;
+        }
+        
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+            background-color: var(--mc-dark-brown);
+            padding: 15px;
+            border: 4px solid var(--mc-brown);
+        }
+        
+        .builder-input {
+            flex: 1;
+            min-width: 250px;
+            padding: 12px;
+            background-color: var(--mc-black);
+            border: 4px solid var(--mc-brown);
+            color: var(--mc-white);
+            font-family: 'Press Start 2P', cursive;
+            font-size: 0.8rem;
+        }
+        
+        .builder-input:focus {
+            outline: none;
+            border-color: var(--mc-light-green);
+        }
+        
+        .btn {
+            padding: 12px 20px;
+            border: none;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            background-color: var(--mc-brown);
+            color: var(--mc-white);
+            border: 4px solid var(--mc-light-brown);
+            box-shadow: 4px 4px 0 var(--mc-black);
+            text-transform: uppercase;
+        }
+        
+        .btn:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0 var(--mc-black);
+        }
+        
+        .btn:active {
+            transform: translate(1px, 1px);
+            box-shadow: 2px 2px 0 var(--mc-black);
+        }
+        
+        .btn-primary {
+            background-color: var(--mc-green);
+            border-color: var(--mc-light-green);
+        }
+        
+        .btn-success {
+            background-color: var(--mc-blue);
+            border-color: #7777FF;
+        }
+        
+        .btn-danger {
+            background-color: var(--mc-red);
+            border-color: #FF7777;
+        }
+        
+        .btn-sm {
+            padding: 8px 12px;
+            font-size: 0.7rem;
+        }
+        
+        .builders-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .builder-card {
+            background-color: var(--mc-dark-brown);
+            border: 4px solid var(--mc-brown);
+            padding: 15px;
+            position: relative;
+            transition: all 0.3s;
+            overflow: hidden;
+        }
+        
+        .builder-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .builder-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            border-bottom: 2px solid var(--mc-light-brown);
+            padding-bottom: 10px;
+            position: relative;
+        }
+        
+        .builder-avatar {
+            width: 96px;
+            height: 96px;
+            image-rendering: pixelated;
+            margin-right: 15px;
+            border: 4px solid var(--mc-brown);
+            background-color: var(--mc-black);
+            object-fit: cover;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .builder-avatar:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 10px var(--mc-yellow);
+        }
+        
+        .builder-name {
+            font-size: 1rem;
+            color: var(--mc-white);
+            flex: 1;
+        }
+        
+        .stats-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        
+        .stat-item {
+            margin-bottom: 10px;
+        }
+        
+        .stat-name {
+            font-size: 0.7rem;
+            color: var(--mc-gray);
+            margin-bottom: 5px;
+        }
+        
+        .stat-controls {
+            display: flex;
+            align-items: center;
+        }
+        
+        .stat-value {
+            font-size: 1rem;
+            color: var(--mc-yellow);
+            min-width: 30px;
+            text-align: center;
+            margin: 0 10px;
+            text-shadow: 2px 2px 0 var(--mc-black);
+        }
+        
+        .artifacts-container {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 2px solid var(--mc-light-brown);
+        }
+        
+        .artifacts-title {
+            font-size: 0.8rem;
+            color: var(--mc-yellow);
+            margin-bottom: 10px;
+        }
+        
+        .artifacts-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .artifact {
+            width: 48px;
+            height: 48px;
+            image-rendering: pixelated;
+            border: 3px solid var(--mc-light-brown);
+            background-color: var(--mc-black);
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s;
+        }
+        
+        .artifact:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 10px var(--mc-yellow);
+        }
+        
+        .artifact-tooltip {
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--mc-dark-brown);
+            border: 3px solid var(--mc-brown);
+            padding: 10px;
+            font-size: 0.7rem;
+            width: 200px;
+            z-index: 10;
+            display: none;
+        }
+        
+        .artifact:hover .artifact-tooltip {
+            display: block;
+        }
+        
+        .floating-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 64px;
+            height: 64px;
+            background-color: var(--mc-red);
+            color: white;
+            border: 4px solid #FF7777;
+            border-radius: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            box-shadow: 6px 6px 0 var(--mc-black);
+            cursor: pointer;
+            transition: all 0.2s;
+            z-index: 100;
+            image-rendering: pixelated;
+        }
+        
+        .floating-btn:hover {
+            transform: translate(-3px, -3px);
+            box-shadow: 9px 9px 0 var(--mc-black);
+        }
+        
+        .floating-btn:active {
+            transform: translate(1px, 1px);
+            box-shadow: 3px 3px 0 var(--mc-black);
+        }
+        
+        .negative-status {
+            filter: brightness(0.7) hue-rotate(180deg);
+        }
+        
+        /* Стили для трещин на карточке */
+        .crack-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><path d="M10,10 L20,5 L25,15 L30,10 L40,20 L35,25 L45,30 L40,40 L50,35 L55,45 L60,40 L70,50 L65,55 L75,60 L70,70 L80,65 L85,75 L90,70" stroke="black" stroke-width="1" fill="none" opacity="0.3"/></svg>');
+            background-size: 100px 100px;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        /* Стили для модального окна выбора аватара */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+        
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .modal-content {
+            background-color: var(--mc-dark-brown);
+            border: 8px solid var(--mc-light-brown);
+            padding: 20px;
+            max-width: 80%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .modal-title {
+            color: var(--mc-yellow);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .skin-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 15px;
+        }
+        
+        .skin-option {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border: 4px solid var(--mc-brown);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .skin-option:hover {
+            transform: scale(1.1);
+            border-color: var(--mc-yellow);
+        }
+        
+        .delete-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: var(--mc-red);
+            color: white;
+            border: none;
+            width: 24px;
+            height: 24px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 10;
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.5rem;
+            }
+            
+            .btn {
+                padding: 10px 15px;
+                font-size: 0.7rem;
+            }
+            
+            .builder-input {
+                font-size: 0.7rem;
+            }
+            
+            .builders-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .builder-avatar {
+                width: 64px;
+                height: 64px;
+            }
+            
+            .skin-grid {
+                grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            }
+            
+            .skin-option {
+                width: 80px;
+                height: 80px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>АКАДЕМИЯ СТРОИТЕЛЕЙ MINECRAFT</h1>
+        
+        <div class="controls">
+            <input type="text" id="newBuilder" class="builder-input" placeholder="ВВЕДИТЕ ИМЯ СТРОИТЕЛЯ">
+            <button onclick="addBuilder()" class="btn btn-primary">
+                ДОБАВИТЬ
+            </button>
+        </div>
+        
+        <div class="builders-grid" id="buildersContainer">
+            <!-- Карточки строителей будут добавлены через JavaScript -->
+        </div>
+    </div>
+
+    <!-- Модальное окно для выбора аватара -->
+    <div class="modal-overlay" id="avatarModal">
+        <div class="modal-content">
+            <h3 class="modal-title">ВЫБЕРИТЕ АВАТАР</h3>
+            <div class="skin-grid" id="skinGrid">
+                <!-- Варианты скинов будут добавлены через JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <div class="floating-btn" onclick="saveAllData()" title="СОХРАНИТЬ ДАННЫЕ">
+        💾
+    </div>
+
+    <script>
+        // Данные о артефактах
+        const artifactsData = {
+            programming: [
+                { 
+                    score: 5, 
+                    img: 'kom.jpg', 
+                    name: 'Компас из редстоуна', 
+                    description: 'Всегда указывает на самое эффективное решение. +10% к скорости программирования.' 
+                },
+                { 
+                    score: 10, 
+                    img: 'red.jpg', 
+                    name: 'Мастер редстоуна', 
+                    description: 'Позволяет создавать сложные схемы из редстоуна. +25% к эффективности программирования.' 
+                },
+                { 
+                    score: 15, 
+                    img: 'kombl.jpg', 
+                    name: 'Командный блок', 
+                    description: 'Дает полный контроль над миром Minecraft. +50% ко всем навыкам программирования.' 
+                }
+            ],
+            teamwork: [
+                { 
+                    score: 5, 
+                    img: 'xleb.jpg', 
+                    name: 'Командный хлеб', 
+                    description: 'Поделитесь с командой для повышения морали. +1 ко всем командным показателям.' 
+                },
+                { 
+                    score: 10, 
+                    img: 'kol.jpg', 
+                    name: 'Командный колокол', 
+                    description: 'Собирает команду для важных задач. +2 ко всем командным показателям.' 
+                },
+                { 
+                    score: 15, 
+                    img: 'mai.jpg', 
+                    name: 'Командный маяк', 
+                    description: 'Вдохновляет команду работать лучше. +3 ко всем командным показателям.' 
+                }
+            ],
+            activity: [
+                { 
+                    score: 5, 
+                    img: 'lap.jpg', 
+                    name: 'Волшебная лопата', 
+                    description: 'Увеличивает скорость копания на 100%. Позволяет строить быстрее.' 
+                },
+                { 
+                    score: 10, 
+                    img: 'cir.jpg', 
+                    name: 'Алмазная кирка', 
+                    description: 'Добывает даже самые прочные блоки. +50% к активности.' 
+                },
+                { 
+                    score: 15, 
+                    img: 'top.jpg', 
+                    name: 'Незеритовый топор', 
+                    description: 'Идеальный инструмент для любой активности. +100% к активности.' 
+                }
+            ],
+            behavior: [
+                { 
+                    score: 5, 
+                    img: 'pech.jpg', 
+                    name: 'Печенька', 
+                    description: 'Награда за хорошее поведение. Делает всех вокруг счастливее.' 
+                },
+                { 
+                    score: 10, 
+                    img: 'medal.jpg', 
+                    name: 'Изумрудная медаль', 
+                    description: 'За выдающееся поведение. Дает уважение других игроков.' 
+                },
+                { 
+                    score: 15, 
+                    img: 'totem.jpg', 
+                    name: 'Тотем доброты', 
+                    description: 'Защищает от плохого поведения. Автоматически разрешает конфликты.' 
+                }
+            ]
+        };
+
+        // Отрицательные артефакты (появляются при отрицательных баллах)
+        const negativeArtifacts = [
+            { 
+                score: -1, 
+                img: 'plot.jpg', 
+                name: 'Гнилая плоть', 
+                description: 'Неприятный запах и плохое самочувствие. -1 ко всем характеристикам.' 
+            },
+            { 
+                score: -2, 
+                img: 'pauk.jpg', 
+                name: 'Паучий глаз', 
+                description: 'Вызывает тошноту и слабость. -2 ко всем характеристикам.' 
+            },
+            { 
+                score: -4, 
+                img: 'cort.jpg', 
+                name: 'Ядовитый картофель', 
+                description: 'Может убить при употреблении. -3 ко всем характеристикам.' 
+            }
+        ];
+
+        // Стандартные скины и дополнительные варианты
+        const defaultSkins = {
+            normal: 'stiv.jpg',
+            happy: 'alex.jpg',
+            sad: 'zom.jpg',
+            angry: 'crip.jpg',
+            enderman: 'end.jpg',
+            piglin: 'tex.jpg',
+            villager: 'sel.jpg',
+            witch: 'which.jpg'
+        };
+
+        // Массив для хранения данных о строителях
+        let builders = [];
+        let currentBuilderIdForAvatarChange = null; // ID строителя, для которого меняем аватар
+
+        // Загрузка данных из localStorage
+        function loadData() {
+            const savedData = localStorage.getItem('minecraftBuildersData');
+            if (savedData) {
+                builders = JSON.parse(savedData);
+                renderBuilders();
+            } else {
+                // Пример данных по умолчанию
+                builders = [
+                    {
+                        id: 1,
+                        name: 'СТИВ',
+                        avatar: defaultSkins.normal,
+                        stats: {
+                            programming: 7,
+                            teamwork: 4,
+                            activity: 12,
+                            behavior: 9
+                        }
+                    },
+                    {
+                        id: 2,
+                        name: 'АЛЕКС',
+                        avatar: defaultSkins.normal,
+                        stats: {
+                            programming: 5,
+                            teamwork: 8,
+                            activity: 6,
+                            behavior: 15
+                        }
+                    }
+                ];
+                renderBuilders();
+            }
+        }
+
+        // Сохранение данных в localStorage
+        function saveAllData() {
+            localStorage.setItem('minecraftBuildersData', JSON.stringify(builders));
+            alert('ДАННЫЕ СОХРАНЕНЫ!');
+        }
+
+        // Добавление нового строителя
+        function addBuilder() {
+            const nameInput = document.getElementById('newBuilder');
+            const name = nameInput.value.trim().toUpperCase();
+            
+            if (name) {
+                const newBuilder = {
+                    id: Date.now(),
+                    name: name,
+                    avatar: defaultSkins.normal,
+                    stats: {
+                        programming: 0,
+                        teamwork: 0,
+                        activity: 0,
+                        behavior: 0
+                    }
+                };
+                
+                builders.push(newBuilder);
+                nameInput.value = '';
+                renderBuilders();
+                saveAllData();
+            } else {
+                alert('ПОЖАЛУЙСТА, ВВЕДИТЕ ИМЯ СТРОИТЕЛЯ');
+            }
+        }
+
+        // Удаление строителя
+        function deleteBuilder(builderId) {
+            if (confirm('УДАЛИТЬ ЭТОГО СТРОИТЕЛЯ?')) {
+                builders = builders.filter(builder => builder.id !== builderId);
+                renderBuilders();
+                saveAllData();
+            }
+        }
+
+        // Показ модального окна для выбора аватара
+        function showAvatarModal(builderId) {
+            currentBuilderIdForAvatarChange = builderId;
+            const modal = document.getElementById('avatarModal');
+            const skinGrid = document.getElementById('skinGrid');
+            
+            // Очищаем и заполняем сетку скинов
+            skinGrid.innerHTML = '';
+            
+            // Добавляем все доступные скины
+            Object.entries(defaultSkins).forEach(([name, url]) => {
+                const skinOption = document.createElement('img');
+                skinOption.src = url;
+                skinOption.alt = name;
+                skinOption.className = 'skin-option';
+                skinOption.onclick = () => selectAvatar(url);
+                skinGrid.appendChild(skinOption);
+            });
+            
+            // Показываем модальное окно
+            modal.classList.add('active');
+        }
+
+        // Выбор аватара
+        function selectAvatar(avatarUrl) {
+            const builder = builders.find(b => b.id === currentBuilderIdForAvatarChange);
+            if (builder) {
+                builder.avatar = avatarUrl;
+                renderBuilders();
+                saveAllData();
+            }
+            
+            // Скрываем модальное окно
+            document.getElementById('avatarModal').classList.remove('active');
+        }
+
+        // Обновление статистики
+        function updateStat(builderId, statName, value) {
+            const builder = builders.find(b => b.id === builderId);
+            if (builder) {
+                builder.stats[statName] += value;
+                
+                // Проверка на разрушение карточки при достижении -5
+                if (builder.stats[statName] <= -5) {
+                    // Добавляем анимацию разрушения перед удалением
+                    const card = document.querySelector(`.builder-card[data-id="${builderId}"]`);
+                    if (card) {
+                        card.style.transition = 'all 0.5s';
+                        card.style.transform = 'scale(0) rotate(180deg)';
+                        card.style.opacity = '0';
+                        
+                        // Удаляем карточку после анимации
+                        setTimeout(() => {
+                            deleteBuilder(builderId);
+                        }, 500);
+                    }
+                    return;
+                }
+                
+                // Обновление аватара в зависимости от поведения
+                if (builder.stats.behavior < 0) {
+                    builder.avatar = defaultSkins.angry;
+                } else if (builder.stats.behavior < 5) {
+                    builder.avatar = defaultSkins.sad;
+                } else if (builder.stats.behavior > 15) {
+                    builder.avatar = defaultSkins.happy;
+                }
+                
+                renderBuilders();
+                saveAllData();
+            }
+        }
+
+        // Отрисовка всех строителей
+        function renderBuilders() {
+            const container = document.getElementById('buildersContainer');
+            container.innerHTML = '';
+            
+            builders.forEach(builder => {
+                const card = document.createElement('div');
+                card.className = 'builder-card';
+                card.dataset.id = builder.id;
+                
+                // Проверяем, есть ли отрицательные баллы
+                const hasNegative = Object.values(builder.stats).some(stat => stat < 0);
+                const minStat = Math.min(...Object.values(builder.stats));
+                
+                // Добавляем эффект трещин в зависимости от минимального значения
+                const crackOverlay = document.createElement('div');
+                crackOverlay.className = 'crack-overlay';
+                
+                // Устанавливаем прозрачность трещин в зависимости от отрицательных баллов
+                if (minStat < 0) {
+                    crackOverlay.style.opacity = Math.min(0.3 + Math.abs(minStat) * 0.1, 0.8);
+                }
+                
+                // Добавляем кнопку удаления
+                const deleteBtn = document.createElement('button');
+                deleteBtn.className = 'delete-btn';
+                deleteBtn.innerHTML = '✕';
+                deleteBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    deleteBuilder(builder.id);
+                };
+                
+                // Заголовок карточки
+                let headerHTML = `
+                    <div class="builder-header">
+                        <img src="${builder.avatar}" alt="${builder.name}" class="builder-avatar ${hasNegative ? 'negative-status' : ''}" 
+                             onclick="showAvatarModal(${builder.id})">
+                        <div class="builder-name">${builder.name}</div>
+                    </div>
+                `;
+                
+                // Статистика
+                let statsHTML = `
+                    <div class="stats-container">
+                `;
+                
+                // Русские названия характеристик
+                const statNames = {
+                    programming: 'ПРОГРАММИРОВАНИЕ',
+                    teamwork: 'КОМАНДНАЯ РАБОТА',
+                    activity: 'АКТИВНОСТЬ',
+                    behavior: 'ПОВЕДЕНИЕ'
+                };
+                
+                Object.entries(builder.stats).forEach(([statName, statValue]) => {
+                    // Определяем цвет значения в зависимости от его величины
+                    let valueColor = 'var(--mc-yellow)';
+                    if (statValue < 0) valueColor = 'var(--mc-red)';
+                    else if (statValue > 15) valueColor = 'var(--mc-blue)';
+                    
+                    statsHTML += `
+                        <div class="stat-item">
+                            <div class="stat-name">${statNames[statName]}</div>
+                            <div class="stat-controls">
+                                <button onclick="updateStat(${builder.id}, '${statName}', -1)" class="btn btn-danger btn-sm">-</button>
+                                <span class="stat-value" style="color: ${valueColor}">${statValue}</span>
+                                <button onclick="updateStat(${builder.id}, '${statName}', 1)" class="btn btn-success btn-sm">+</button>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                statsHTML += `</div>`;
+                
+                // Артефакты
+                let artifactsHTML = `
+                    <div class="artifacts-container">
+                        <div class="artifacts-title">АРТЕФАКТЫ:</div>
+                        <div class="artifacts-grid">
+                `;
+                
+                // Положительные артефакты
+                Object.entries(builder.stats).forEach(([statName, statValue]) => {
+                    const artifacts = artifactsData[statName] || [];
+                    artifacts.forEach(artifact => {
+                        if (statValue >= artifact.score) {
+                            artifactsHTML += `
+                                <div class="artifact">
+                                    <img src="${artifact.img}" alt="${artifact.name}" title="${artifact.name}">
+                                    <div class="artifact-tooltip">
+                                        <strong>${artifact.name}</strong><br>
+                                        ${artifact.description}
+                                    </div>
+                                </div>
+                            `;
+                        }
+                    });
+                });
+                
+                // Отрицательные артефакты (если есть отрицательные баллы)
+                if (hasNegative) {
+                    negativeArtifacts.forEach(artifact => {
+                        if (minStat <= artifact.score) {
+                            artifactsHTML += `
+                                <div class="artifact negative-status">
+                                    <img src="${artifact.img}" alt="${artifact.name}" title="${artifact.name}">
+                                    <div class="artifact-tooltip">
+                                        <strong>${artifact.name}</strong><br>
+                                        ${artifact.description}
+                                    </div>
+                                </div>
+                            `;
+                        }
+                    });
+                }
+                
+                artifactsHTML += `</div></div>`;
+                
+                // Собираем карточку
+                card.innerHTML = headerHTML + statsHTML + artifactsHTML;
+                card.appendChild(crackOverlay);
+                card.appendChild(deleteBtn);
+                
+                // Добавляем эффект треснувшего блока, если есть отрицательные баллы
+                if (hasNegative) {
+                    card.style.border = '4px solid var(--mc-red)';
+                    card.style.boxShadow = '0 0 10px var(--mc-red)';
+                }
+                
+                container.appendChild(card);
+            });
+        }
+
+        // Закрытие модального окна при клике вне его
+        document.addEventListener('click', function(e) {
+            const modal = document.getElementById('avatarModal');
+            if (e.target === modal) {
+                modal.classList.remove('active');
+            }
+        });
+
+        // Инициализация при загрузке страницы
+        window.onload = loadData;
+    </script>
+</body>
+</html>
